@@ -2,6 +2,7 @@ import React from 'react';
 import LoginForm from './Auth';
 import Card from './card'
 import './App.css';
+import AddReminder from './addRem';
 
 class App extends React.Component{
     constructor(props){
@@ -9,6 +10,8 @@ class App extends React.Component{
         this.response = null
         this.submitForm = this.submitForm.bind(this);
         this.toggleSignup = this.toggleSignup.bind(this);
+        this.addReminder = this.addReminder.bind(this);
+        this.cancelAdd = this.cancelAdd.bind(this);
         this.state = {isLoggedin: false}
     }
     
@@ -76,6 +79,23 @@ class App extends React.Component{
             }
     }
 
+    addReminder(event){
+        event.preventDefault()
+        document.getElementById('new-password-form').removeAttribute('hidden')
+        document.getElementById('cancel').removeAttribute('hidden')
+        document.getElementsByClassName('new-password-req')[0].setAttribute('required','')
+        document.getElementsByClassName('new-password-req')[1].setAttribute('required','')
+        document.getElementById('new-password').hidden = 'true'
+    }
+
+    cancelAdd(){
+        document.getElementById('new-password-form').hidden = 'true'
+        document.getElementById('new-password').removeAttribute('hidden')
+        document.getElementsByClassName('new-password-req')[0].removeAttribute('required')
+        document.getElementsByClassName('new-password-req')[1].removeAttribute('required')
+        document.getElementById('cancel').hidden = 'true'
+    }
+
     render(){
         if (!this.state.isLoggedin){
             return(
@@ -93,6 +113,7 @@ class App extends React.Component{
                                 return <Card key={i++} reminder={item}/>
                             }
                         )}
+                        <AddReminder addRem={this.addReminder} cancel={this.cancelAdd} />
                     </div>
                 </div>
             )

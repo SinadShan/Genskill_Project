@@ -1,2 +1,2 @@
 create table if not exists users (id integer primary key not null, username text unique not null, password text not null);
-create table if not exists reminders (uid foriegn key references users(id),reminder text, Date date);
+create table if not exists reminders (uid foriegn key references users(id),reminder text, Date text);

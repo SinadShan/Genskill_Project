@@ -19,14 +19,6 @@
     color: white;
 }
 
-#username{
-    margin: 0;
-}
-
-#logout{
-    float: right;
-    text-decoration: none;
-}
 
 .card input[type=text],
 .card input[type=text]:focus,
@@ -47,22 +39,12 @@
     font-size: 1.65rem;
 }
 
-.eye{
-    font-size: 1.4rem;
-    float: right;
-    position: relative;
-    top: -35px;
-    left: -30px;
-}
-.eye:hover,
-.clipboard:hover{
-    transform: scale(1.1);
+.bi-x:hover{
+    color: royalblue;
 }
 
-.clipboard{
-    font-size: 1.25rem;
-    float: right;
-    position: relative;
-    top: -35px;
-    left: 20px;
+form p{
+    margin-top: 40px;
+    margin-bottom: 0;
+    font-size: 1rem;
 }

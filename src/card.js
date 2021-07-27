@@ -12,14 +12,13 @@ function Card(props){
                         </div>
                     </div>
                     <div className="row">
-                        <h5 className="card-title">Reminder</h5>
+                        {/* <h5 className="card-title">Reminder</h5> */}
                         <p className="card-text">{props.reminder[1]}</p>
                         <form method="post">
                             <div className="form-group">
                                 <input type="text" disabled name="reminder" className="form-control" value= {props.reminder[0]} />
-                                <i className="bi bi-eye eye" />
-                                <i className="bi bi-clipboard clipboard" />
                             </div>
+                            <p className="text-muted">Mark as completed</p>
                         </form>
                     </div>
                 </div>

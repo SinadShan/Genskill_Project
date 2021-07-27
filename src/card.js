@@ -1,14 +1,14 @@
 import './card.css'
 
 function Card(props){
-    console.log(props)
+    
     return (
         <div className="col-lg-4">
             <div className="card">
                 <div className="card-body d-flex flex-column ">
                     <div className="row justify-content-end">
                         <div className="col-2">
-                            <i className="bi bi-x"></i>
+                            <i className="bi bi-x" />
                         </div>
                     </div>
                     <div className="row">
@@ -17,8 +17,8 @@ function Card(props){
                         <form method="post">
                             <div className="form-group">
                                 <input type="text" disabled name="reminder" className="form-control" value= {props.reminder[0]} />
-                                <i className="bi bi-eye eye"></i>
-                                <i className="bi bi-clipboard clipboard"></i>
+                                <i className="bi bi-eye eye" />
+                                <i className="bi bi-clipboard clipboard" />
                             </div>
                         </form>
                     </div>

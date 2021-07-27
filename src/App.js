@@ -7,12 +7,16 @@ import AddReminder from './addRem';
 class App extends React.Component{
     constructor(props){
         super(props);
-        this.response = null
+        // this.response = null
         this.submitForm = this.submitForm.bind(this);
         this.toggleSignup = this.toggleSignup.bind(this);
-        this.addReminder = this.addReminder.bind(this);
+        this.toggleAddReminder = this.toggleAddReminder.bind(this);
+        this.submitNewReminder = this.submitNewReminder.bind(this);
         this.cancelAdd = this.cancelAdd.bind(this);
-        this.state = {isLoggedin: false}
+        this.state = {
+            isLoggedin: false,
+            response: null,
+        }
     }
     
     toggleSignup(event){
@@ -40,6 +44,7 @@ class App extends React.Component{
     submitForm(event){
             event.preventDefault()
             let form = document.getElementsByTagName('form')[0]
+            
             const data = new FormData(form)
             const plainFormData = Object.fromEntries(data.entries());
             const JSONdata = JSON.stringify(plainFormData)
@@ -52,7 +57,7 @@ class App extends React.Component{
                 }).then(resp => resp.json().then(
                   data =>{
                       if (data){
-                            this.response = data
+                            this.setState({response: data})
                             this.setState({isLoggedin: true})
                       }
                       else{
@@ -69,7 +74,7 @@ class App extends React.Component{
                 }).then(resp => resp.json().then(
                   data => {
                     if (data){
-                        this.response = data
+                        this.setState({response: data})
                         this.setState({isLoggedin: true})
                     }
                     else{
@@ -79,20 +84,45 @@ class App extends React.Component{
             }
     }
 
-    addReminder(event){
+    toggleAddReminder(event){
         event.preventDefault()
-        document.getElementById('new-password-form').removeAttribute('hidden')
+        document.getElementById('new-reminder-form').removeAttribute('hidden')
         document.getElementById('cancel').removeAttribute('hidden')
-        document.getElementsByClassName('new-password-req')[0].setAttribute('required','')
-        document.getElementsByClassName('new-password-req')[1].setAttribute('required','')
-        document.getElementById('new-password').hidden = 'true'
+        document.getElementsByClassName('new-reminder-req')[0].setAttribute('required','')
+        document.getElementsByClassName('new-reminder-req')[1].setAttribute('required','')
+        document.getElementById('new-reminder').hidden = 'true'
+    }
+
+    submitNewReminder(event){
+        event.preventDefault()
+        let form = document.getElementById('new-reminder-form')
+        const data = new FormData(form)
+        const plainFormData = Object.fromEntries(data.entries());
+        const JSONdata = JSON.stringify(plainFormData)
+
+        fetch('http://localhost:5000/addrem',{
+            method: 'POST',
+            headers:{'Content-Type': 'application/json'},
+            body: JSONdata,
+        }).then(resp => resp.json().then(data =>{
+                if (data){
+                    this.setState({response: data},function(){
+                        this.cancelAdd()
+                        document.getElementsByClassName('new-reminder-req')[0].value=''
+                        document.getElementsByClassName('new-reminder-req')[1].value=''
+                    })
+                }
+            }))
+        
+        
+
     }
 
     cancelAdd(){
-        document.getElementById('new-password-form').hidden = 'true'
-        document.getElementById('new-password').removeAttribute('hidden')
-        document.getElementsByClassName('new-password-req')[0].removeAttribute('required')
-        document.getElementsByClassName('new-password-req')[1].removeAttribute('required')
+        document.getElementById('new-reminder-form').hidden = 'true'
+        document.getElementById('new-reminder').removeAttribute('hidden')
+        document.getElementsByClassName('new-reminder-req')[0].removeAttribute('required')
+        document.getElementsByClassName('new-reminder-req')[1].removeAttribute('required')
         document.getElementById('cancel').hidden = 'true'
     }
 
@@ -107,13 +137,13 @@ class App extends React.Component{
         else{
             return(
                 <div className='container text-center'>
-                    <h1>Adipoli, Login aay</h1>
+                    <h1>Logged in!</h1>
                     <div className="row">
-                        { this.response.reminders.map((item,i=0) =>{
+                        { this.state.response.reminders.map((item,i=0) =>{
                                 return <Card key={i++} reminder={item}/>
                             }
                         )}
-                        <AddReminder addRem={this.addReminder} cancel={this.cancelAdd} />
+                        <AddReminder addRem={this.toggleAddReminder} cancel={this.cancelAdd} submit={this.submitNewReminder}/>
                     </div>
                 </div>
             )

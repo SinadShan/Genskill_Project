@@ -23,7 +23,7 @@ def login():
         # print(type(result)) 
 
         if(result and result[0]== username):
-            cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?);',(username,))
+            cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?) order by date;',(username,))
             remindersList = cursor.fetchall()
             print(remindersList)
             cursor.close()
@@ -62,6 +62,34 @@ def signup():
             con.close()
             return jsonify(None)
 
+@app.route('/addrem',methods=["POST"])
+def addRem():
+    if request.method== 'POST':
+        con = sqlite3.connect('app_db.db')
+        cursor = con.cursor()
+        data = json.loads(request.get_data().decode())
+        date = data['date']
+        reminder = data['reminder']
+        print(data) # for debugging
+
+        try:
+            cursor.execute('insert into reminders (uid,reminder,date) values (1,?,?);',[reminder,date])
+            con.commit()
+
+            cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?) order by date;',('a',))
+            remindersList = cursor.fetchall() 
+            cursor.close()
+            con.close()
+            return jsonify({
+            'message':'success',
+            'reminders': remindersList        
+        })
+
+        except sqlite3.Error as error:
+            print(error)
+            cursor.close()
+            con.close()
+            return jsonify(None)
         
 
 

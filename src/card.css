@@ -41,10 +41,17 @@
 
 .bi-x:hover{
     color: royalblue;
+    cursor: pointer;
 }
 
 form p{
+    display: inline;
     margin-top: 40px;
     margin-bottom: 0;
     font-size: 1rem;
+}
+
+form p:hover{
+    /* font-size: 1.05rem; */
+    cursor:pointer;
 }

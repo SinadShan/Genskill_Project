@@ -1,5 +1,17 @@
 import './card.css'
 
+function markAsCompleted(event){
+    let reminder = event.target.parentElement.children[0].children[0]
+    if(event.target.innerHTML=='Mark as completed'){
+        event.target.innerHTML='Unmark'
+        reminder.style.textDecoration='line-through'
+    }
+    else{
+        event.target.innerHTML='Mark as completed'
+        reminder.style.textDecoration='None'
+    }
+}
+
 function Card(props){
     
     return (
@@ -18,7 +30,7 @@ function Card(props){
                             <div className="form-group">
                                 <input type="text" disabled name="reminder" className="form-control" value= {props.reminder[0]} />
                             </div>
-                            <p className="text-muted">Mark as completed</p>
+                            <p className="text-muted" onClick={markAsCompleted}>Mark as completed</p>
                         </form>
                     </div>
                 </div>

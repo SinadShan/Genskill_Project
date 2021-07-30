@@ -15,6 +15,7 @@ class App extends React.Component{
         this.submitNewReminder = this.submitNewReminder.bind(this);
         this.cancelAdd = this.cancelAdd.bind(this);
         this.deleteReminder = this.deleteReminder.bind(this);
+        this.logout = this.logout.bind(this)
 
         this.state = {
             isLoggedin: false,
@@ -158,6 +159,13 @@ class App extends React.Component{
             }))
     }
 
+    logout(){
+        this.setState({isLoggedin:false})
+        this.setState({user:null})
+        this.setState({response: null})
+    }
+
+
     render(){
         if (this.state.isLoggedin===false && localStorage.getItem('response')!=null){
             return(
@@ -169,9 +177,10 @@ class App extends React.Component{
         else{
             return(
                 <div className="container-fluid" style={{padding: '0'}}>
-                    <div className="header" style={{backgroundColor:'#36373f', padding:'15px 15px 15px 30px', marginBottom: '10px'}}>
-                            <h1 style={{color: 'white'}}>User: {this.state.user}</h1>
-                        </div>
+                    <div className="header align-middle" style={{backgroundColor:'#36373f', padding:'15px 15px 15px 30px', marginBottom: '10px'}}>
+                        <h1 style={{color: 'white', display:'inline-block'}}>User: {this.state.user}</h1>
+                        <p className="logout text-muted" onClick={this.logout}>Logout</p>
+                    </div>
                     <div className='container' style={{padding: '0'}} >
                         {/* <hr style={{height: '5px'}}/> */}
                         <div className="row" style={{padding: '10px'}}>

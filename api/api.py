@@ -11,6 +11,25 @@ app = Flask(__name__)
 CORS(app)
 db.initdb()
 
+def getRems(user):
+    con = sqlite3.connect('app_db.db')
+    cursor = con.cursor()
+    cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?) order by date;',(user,))
+    remindersList = cursor.fetchall() 
+    for i in range(len(remindersList)):
+        y = None
+        if(remindersList[i][1]!=''):
+            y = datetime.strptime(remindersList[i][1],"%Y-%m-%d")
+            remindersList[i]=list(remindersList[i])
+            remindersList[i][1] = y.strftime("%d/%m/%Y")
+            remindersList[i]=tuple(remindersList[i])
+    cursor.close()
+    con.close()
+    return jsonify({
+        'message':'success',
+        'reminders': remindersList        
+    })
+
 @app.route('/login',methods=['GET','POST'])
 def login():
 
@@ -22,27 +41,12 @@ def login():
         cursor.execute('select username from users where username=? and password=?',(username,password))
         result = cursor.fetchone()
         # print(type(result)) 
+        cursor.close()
+        con.close()
 
         if(result and result[0]== username):
-            cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?) order by date;',(username,))
-            remindersList = cursor.fetchall()
-            for i in range(len(remindersList)):
-                y = None
-                if(remindersList[i][1]!=''):
-                    y = datetime.strptime(remindersList[i][1],"%Y-%m-%d")
-                    remindersList[i]=list(remindersList[i])
-                    remindersList[i][1] = y.strftime("%d/%m/%Y")
-                    remindersList[i]=tuple(remindersList[i])
-            # print(remindersList)
-            cursor.close()
-            con.close()
-            return jsonify({
-                'message': 'success',
-                'reminders': remindersList    
-            })
+            return getRems(username)
         else:
-            cursor.close()
-            con.close()
             return jsonify(None)
         
 
@@ -80,29 +84,15 @@ def addRem():
         reminder = data['reminder']
         user = data['username']
         # print(data) 
-
         try:
             cursor.execute('insert into reminders (uid,reminder,date) values ((select id from users where username=?),?,?);',[user,reminder,date])
             con.commit()
-
-            cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?) order by date;',(user,))
-            remindersList = cursor.fetchall() 
-            for i in range(len(remindersList)):
-                y = None
-                if(remindersList[i][1]!=''):
-                    y = datetime.strptime(remindersList[i][1],"%Y-%m-%d")
-                    remindersList[i]=list(remindersList[i])
-                    remindersList[i][1] = y.strftime("%d/%m/%Y")
-                    remindersList[i]=tuple(remindersList[i])
             cursor.close()
             con.close()
-            return jsonify({
-            'message':'success',
-            'reminders': remindersList        
-        })
+            return getRems(user)  
 
         except sqlite3.Error as error:
-            print(error)
+            print(error) 
             cursor.close()
             con.close()
             return jsonify(None)
@@ -126,28 +116,13 @@ def deleteReminder():
         try:
             cursor.execute('delete from reminders where uid=(select id from users where username=?) and reminder=? and date=?;',[user,reminder,date])
             con.commit()
-
-            cursor.execute('select reminder,date from reminders where uid=(select id from users where username=?) order by date;',(user,))
-            remindersList = cursor.fetchall()
-            for i in range(len(remindersList)):
-                y = None
-                if(remindersList[i][1]!=''):
-                    y = datetime.strptime(remindersList[i][1],"%Y-%m-%d")
-                    remindersList[i]=list(remindersList[i])
-                    remindersList[i][1] = y.strftime("%d/%m/%Y")
-                    remindersList[i]=tuple(remindersList[i])
-            print(remindersList)
             cursor.close()
             con.close()
-            return jsonify({
-            'message':'success',
-            'reminders': remindersList        
-        })
+
+            return getRems(user)
 
         except sqlite3.Error as error:
             print(error)
-            cursor.close()
-            con.close()
             return jsonify(None)
 
 if __name__=="__main__":

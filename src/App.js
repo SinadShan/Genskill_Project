@@ -138,6 +138,8 @@ class App extends React.Component{
         document.getElementsByClassName('new-reminder-req')[0].removeAttribute('required')
         document.getElementsByClassName('new-reminder-req')[1].removeAttribute('required')
         document.getElementById('cancel').hidden = 'true'
+        document.getElementsByClassName('new-reminder-req')[0].value=''
+        document.getElementsByClassName('new-reminder-req')[1].value=''
     }
 
     deleteReminder(event){

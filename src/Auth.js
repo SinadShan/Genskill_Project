@@ -23,7 +23,7 @@ function LoginForm(props){
                                 <span>
                                     <div class="form-group form-floating" hidden='true' id="signup-password">
                                         <input type="password" name="password-again" class="form-control" placeholder="Enter the password again" />
-                                        <label htmlFor="password">Password</label>
+                                        <label htmlFor="password">Repeat Password</label>
                                     </div>
                                 </span>
 

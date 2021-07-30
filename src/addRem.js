@@ -23,7 +23,7 @@ export default function AddReminder(props){
                                 </div>
                             </form>
                             
-                            <a href="#" id="new-reminder" className="btn btn-primary" onClick={props.addRem}>Add a Reminder</a>
+                            <a  id="new-reminder" className="btn btn-primary" onClick={props.addRem}>Add a Reminder</a>
                         </div>
                     </div>
                 </div>

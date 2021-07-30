@@ -44,6 +44,14 @@
     cursor: pointer;
 }
 
+.card-text{
+    margin-bottom: 0;
+}
+
+form{
+    margin-top: 10px;
+}
+
 form p{
     display: inline;
     margin-top: 40px;

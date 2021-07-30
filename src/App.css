@@ -2,7 +2,13 @@ body,html{
   background: -webkit-radial-gradient(left, #404eed, #6975fa);
   /* background-color: #5865f2; */
   height: 100%;
+  width: 100vw;
 }
+
+*{
+  box-sizing: border-box;
+}
+
 .contact-form{
   box-shadow: 10px 10px 7px rgba(0, 0, 0, 0.233);
   background: #36393f;

@@ -3,7 +3,7 @@ import './card.css'
 
 export default function AddReminder(props){
     return(
-        <div className="col-6 col-lg-4">
+        <div className="col-4">
                 <div className="card">
                     <div className="card-body d-flex justify-content-center align-items-center">
                         <div className="row">

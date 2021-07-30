@@ -8,14 +8,18 @@ class App extends React.Component{
     constructor(props){
         super(props);
         // this.response = null
+        
         this.submitForm = this.submitForm.bind(this);
         this.toggleSignup = this.toggleSignup.bind(this);
         this.toggleAddReminder = this.toggleAddReminder.bind(this);
         this.submitNewReminder = this.submitNewReminder.bind(this);
         this.cancelAdd = this.cancelAdd.bind(this);
+        this.deleteReminder = this.deleteReminder.bind(this);
+
         this.state = {
             isLoggedin: false,
             response: null,
+            user: null
         }
     }
     
@@ -47,6 +51,7 @@ class App extends React.Component{
             
             const data = new FormData(form)
             const plainFormData = Object.fromEntries(data.entries());
+            // console.log(plainFormData)
             const JSONdata = JSON.stringify(plainFormData)
             if(document.getElementById('heading').innerText === 'Login'){
                 // login
@@ -59,6 +64,8 @@ class App extends React.Component{
                       if (data){
                             this.setState({response: data})
                             this.setState({isLoggedin: true})
+                            this.setState({user: plainFormData.username})
+                            localStorage.setItem('response',JSON.stringify(data))
                       }
                       else{
                           alert('Invalid username or password')
@@ -76,6 +83,7 @@ class App extends React.Component{
                     if (data){
                         this.setState({response: data})
                         this.setState({isLoggedin: true})
+                        localStorage.setItem('response',JSON.stringify(data))
                     }
                     else{
                         alert('Failed to sign-up')
@@ -97,8 +105,10 @@ class App extends React.Component{
         event.preventDefault()
         let form = document.getElementById('new-reminder-form')
         const data = new FormData(form)
-        const plainFormData = Object.fromEntries(data.entries());
+        let plainFormData = Object.fromEntries(data.entries());
+        plainFormData.username=this.state.user
         const JSONdata = JSON.stringify(plainFormData)
+        // console.log(plainFormData)
 
         fetch('http://localhost:5000/addrem',{
             method: 'POST',
@@ -107,6 +117,7 @@ class App extends React.Component{
         }).then(resp => resp.json().then(data =>{
                 if (data){
                     this.setState({response: data},function(){
+                        localStorage.setItem('response',JSON.stringify(data))
                         this.cancelAdd()
                         document.getElementsByClassName('new-reminder-req')[0].value=''
                         document.getElementsByClassName('new-reminder-req')[1].value=''
@@ -126,8 +137,29 @@ class App extends React.Component{
         document.getElementById('cancel').hidden = 'true'
     }
 
+    deleteReminder(event){
+        // let form = event.target.parentElement.parentElement.parentElement.children[1].children[1]
+        // const data = new FormData(form)
+        let plainData = {};
+        plainData['reminder']=event.target.parentElement.parentElement.parentElement.children[1].children[1].children[0].children[0].value
+        plainData['date']= event.target.parentElement.parentElement.parentElement.children[1].children[0].innerText
+        plainData.username=this.state.user
+        console.log(plainData)
+        const JSONdata = JSON.stringify(plainData)
+    
+        fetch('http://localhost:5000/deleteRem',{
+                method: 'POST',
+                headers:{'Content-Type': 'application/json'},
+                body: JSONdata,
+            }).then(resp => resp.json().then(data =>{
+                if (data){
+                    this.setState({response: data})
+                }
+            }))
+    }
+
     render(){
-        if (!this.state.isLoggedin){
+        if (this.state.isLoggedin===false && localStorage.getItem('response')!=null){
             return(
                 <div>
                     <LoginForm do={this.submitForm} toggleSignup={this.toggleSignup}/>
@@ -136,14 +168,19 @@ class App extends React.Component{
         }
         else{
             return(
-                <div className='container text-center'>
-                    <h1>Logged in!</h1>
-                    <div className="row">
-                        { this.state.response.reminders.map((item,i=0) =>{
-                                return <Card key={i++} reminder={item}/>
-                            }
-                        )}
-                        <AddReminder addRem={this.toggleAddReminder} cancel={this.cancelAdd} submit={this.submitNewReminder}/>
+                <div className="container-fluid" style={{padding: '0'}}>
+                    <div className="header" style={{backgroundColor:'#36373f', padding:'15px 15px 15px 30px', marginBottom: '10px'}}>
+                            <h1 style={{color: 'white'}}>User: {this.state.user}</h1>
+                        </div>
+                    <div className='container' style={{padding: '0'}} >
+                        {/* <hr style={{height: '5px'}}/> */}
+                        <div className="row" style={{padding: '10px'}}>
+                            {this.state.response.reminders.map((item,i=0) =>{
+                                    return <Card key={i++} reminder={item} deleteRem={this.deleteReminder}/>
+                                }
+                            )}
+                            <AddReminder addRem={this.toggleAddReminder} cancel={this.cancelAdd} submit={this.submitNewReminder}/>
+                        </div>
                     </div>
                 </div>
             )

@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import json
 import sqlite3
 from datetime import datetime
+import bcrypt
 
 from flask_cors.extension import CORS
 import db
@@ -38,13 +39,15 @@ def login():
         cursor = con.cursor()
         username = json.loads(request.get_data().decode())['username']
         password = json.loads(request.get_data().decode())['password']
-        cursor.execute('select username from users where username=? and password=?',(username,password))
+
+        cursor.execute('select username,password from users where username=?',(username,))
         result = cursor.fetchone()
+
         # print(type(result)) 
         cursor.close()
         con.close()
 
-        if(result and result[0]== username):
+        if(bcrypt.checkpw(password, result[1])):
             return getRems(username)
         else:
             return jsonify(None)
@@ -58,8 +61,10 @@ def signup():
         cursor = con.cursor()
         username = json.loads(request.get_data().decode())['username']
         password = json.loads(request.get_data().decode())['password']
+
+        hashedPass = bcrypt.hashpw(password,bcrypt.gensalt())
         try:
-            cursor.execute('insert into users (username,password) values (?,?);',[username,password])
+            cursor.execute('insert into users (username,password) values (?,?);',[username,hashedPass])
             con.commit()
             cursor.close()
             con.close()

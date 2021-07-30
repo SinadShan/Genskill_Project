@@ -66,7 +66,7 @@ class App extends React.Component{
                             this.setState({response: data})
                             this.setState({isLoggedin: true})
                             this.setState({user: plainFormData.username})
-                            localStorage.setItem('response',JSON.stringify(data))
+                            // localStorage.setItem('response',JSON.stringify(data))
                       }
                       else{
                           alert('Invalid username or password')
@@ -84,7 +84,9 @@ class App extends React.Component{
                     if (data){
                         this.setState({response: data})
                         this.setState({isLoggedin: true})
-                        localStorage.setItem('response',JSON.stringify(data))
+                        this.setState({user: plainFormData.username})
+
+                        // localStorage.setItem('response',JSON.stringify(data))
                     }
                     else{
                         alert('Failed to sign-up')
@@ -184,10 +186,10 @@ class App extends React.Component{
                     <div className='container' style={{padding: '0'}} >
                         {/* <hr style={{height: '5px'}}/> */}
                         <div className="row" style={{padding: '10px'}}>
-                            {this.state.response.reminders.map((item,i=0) =>{
+                            {this.state.response.reminders?this.state.response.reminders.map((item,i=0) =>{
                                     return <Card key={i++} reminder={item} deleteRem={this.deleteReminder}/>
                                 }
-                            )}
+                            ):null}
                             <AddReminder addRem={this.toggleAddReminder} cancel={this.cancelAdd} submit={this.submitNewReminder}/>
                         </div>
                     </div>
